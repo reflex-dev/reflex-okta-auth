@@ -1,0 +1,71 @@
+# Entry conditions:
+# - `setup/checkout` has already happened
+# - working dir is the root directory of your project (e.g. `reflex/`).
+# - You have a `uv.lock` file in the root directory of your project
+# - You have a `pyproject.toml` file in the root directory of your project
+#
+# Exit conditions:
+# - Python of version `python-version` is ready to be invoked as `python`.
+# - Uv of version `uv-version` is ready to be invoked as `uv`.
+# - If `run-uv-sync` is true, deps as defined in `pyproject.toml` will have been installed into the venv at `create-venv-at-path`.
+
+name: "Setup Reflex build environment"
+description: "Sets up Python, install uv (cached), install project deps (cached)"
+inputs:
+  python-version:
+    description: "Python version setup"
+    required: true
+  uv-version:
+    description: "Uv version to install"
+    required: false
+    default: "0.8.0"
+  run-uv-sync:
+    description: "Whether to run uv sync on current dir"
+    required: false
+    default: false
+  create-venv-at-path:
+    description: "Path to venv (if uv sync is enabled)"
+    required: false
+    default: ".venv"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Install UV
+      uses: astral-sh/setup-uv@v5
+      with:
+        version: ${{ inputs.uv-version }}
+        python-version: ${{ inputs.python-version }}
+        enable-cache: true
+        prune-cache: false
+        cache-dependency-glob: "uv.lock"
+
+    - name: Restore cached project python deps
+      id: restore-pydeps-cache
+      uses: actions/cache/restore@v4
+      with:
+        path: ${{ inputs.create-venv-at-path }}
+        key: ${{ runner.os }}-python-${{ inputs.python-version }}-pydeps-${{ hashFiles('**/uv.lock') }}
+
+    - if: ${{ inputs.run-uv-sync == 'true' && steps.restore-pydeps-cache.outputs.cache-hit != 'true' }}
+      name: Run uv sync (will get cached)
+      # We skip over installing the root package (the current project code under CI)
+      # Root package should not be cached - its content is not reflected in uv.lock / cache key
+      shell: bash
+      run: |
+        uv sync --all-extras --dev --no-install-project --prerelease=allow
+
+    - if: steps.restore-pydeps-cache.outputs.cache-hit != 'true'
+      name: Save Python deps to cache
+      uses: actions/cache/save@v4
+      with:
+        path: ${{ inputs.create-venv-at-path }}
+        key: ${{ steps.restore-pydeps-cache.outputs.cache-primary-key }}
+
+    - if: ${{ inputs.run-uv-sync == 'true' }}
+      name: Run uv sync (root package)
+      # Here we really install the root package (the current project code under CI).env:
+      # This should not be cached.
+      shell: bash
+      run: |
+        uv sync --all-extras --dev

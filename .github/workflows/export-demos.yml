@@ -1,0 +1,46 @@
+name: export-demos
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.id }}
+  cancel-in-progress: true
+
+on:
+  pull_request:
+    branches: ["main"]
+    paths-ignore:
+      - "**/*.md"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  demo-export-tests:
+    timeout-minutes: 30
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ["3.11.11", "3.12.8", "3.13.1"]
+    runs-on: ubuntu-22.04
+    
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history and tags for proper versioning
+      - uses: ./.github/actions/setup_build_env
+        with:
+          python-version: ${{ matrix.python-version }}
+          run-uv-sync: true
+
+      - name: Install demo requirements
+        run: |
+          cd demos
+          uv pip install --prerelease=allow -r requirements.txt
+
+      - name: Test demo export
+        env:
+          REFLEX_ACCESS_TOKEN: ${{ secrets.REFLEX_ACCESS_TOKEN }}
+        run: |
+          cd demos
+          uv run --no-sync reflex --version
+          uv run --no-sync reflex export

@@ -1,0 +1,71 @@
+[project]
+name = "reflex-okta-auth"
+dynamic = ["version"]
+description = "Integration with Okta server-side SSO"
+license = "LicenseRef-Proprietary"
+readme = "README.md"
+requires-python = ">=3.10, <4.0"
+keywords = ["reflex", "python", "reflex-enterprise"]
+authors = [ 
+    {name= "Masen Furer", email="masen@reflex.dev"},
+]
+dependencies = [
+    "reflex-enterprise (>=0.3.0)",
+    "okta_jwt_verifier",
+]
+
+[project.optional-dependencies]
+
+[project.urls]
+homepage = "https://reflex.dev/"
+documentation = "https://enterprise.reflex.dev"
+
+[build-system]
+requires = ["hatchling", "uv-dynamic-versioning"]
+build-backend = "hatchling.build"
+
+[tool.hatch.version]
+source = "uv-dynamic-versioning"
+
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+bump = true
+metadata = false
+
+[dependency-groups]
+dev = [  
+    "pre-commit ==4.2.0",
+    "pyright >=1.1.400",
+]
+
+[tool.ruff]
+target-version = "py310"
+output-format = "concise"
+lint.isort.split-on-trailing-comma = false
+lint.select = ["ANN001","B", "C4", "D", "E", "ERA", "F", "FURB", "I", "N", "PERF", "PGH", "PTH", "RUF", "SIM", "T", "TRY", "W"]
+lint.ignore = ["B008", "D205", "E501", "F403", "SIM115", "RUF006", "RUF008", "RUF012", "TRY0"]
+lint.pydocstyle.convention = "google"
+
+
+[tool.ruff.lint.per-file-ignores]
+"*.pyi" = ["D301", "D415", "D417", "D418", "E742", "N", "PGH"]
+"**/alembic/*.py" = ["D","ERA"]
+"tests/*.py" = ["ANN001", "D"]
+"demos/*.py" = ["ANN001", "D", "ERA"]
+".flexdown/*.py" = ["ANN001", "D", "F401"]
+"__init__.py" = ["ERA"]
+
+[tool.pyright]
+reportIncompatibleMethodOverride = false
+reportMissingImports = false
+reportInconsistentOverload = false
+exclude = ["**/alembic/*", "demos/*", "reflex_enterprise/components/mantine/*.pyi"]
+
+[tool.pytest.ini_options]
+filterwarnings = "ignore:fields may not start with an underscore:RuntimeWarning"
+asyncio_default_fixture_loop_scope = "function"
+asyncio_mode = "auto"
+
+[tool.codespell]
+skip = "*.pyi, uv.lock"

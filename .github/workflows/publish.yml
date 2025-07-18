@@ -1,0 +1,71 @@
+name: Build and Publish
+
+on:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read  # Required for checkout
+  id-token: write  # For trusted publishing if using OIDC
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install UV
+        run: |
+          pip install uv
+
+      - name: Build Wheel (without sdist)
+        run: uv build --wheel
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: built-wheel
+          path: dist/*.whl
+          retention-days: 1  # Keep for 1 day
+
+  publish:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # Fetch all history for tags
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Download all compiled wheels
+        uses: actions/download-artifact@v4
+        with:
+          path: dist/
+          name: built-wheel
+        #   pattern: reflex_enterprise*.whl
+          merge-multiple: true
+      - name: List dist folder contents (for debugging)
+        run: |
+          pwd
+          echo "-------"
+          ls -l
+          echo "-------"
+          ls -l dist/
+      - name: Install UV
+        run: |
+          pip install uv
+
+      - name: Publish to PyPI
+        run: uv publish --token ${{ secrets.PYPI_API_TOKEN }}

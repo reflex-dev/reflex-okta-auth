@@ -1,0 +1,25 @@
+fail_fast: true
+
+repos:
+
+  - repo: https://github.com/charliermarsh/ruff-pre-commit
+    rev: v0.9.3
+    hooks:
+      - id: ruff-format
+        args: [reflex_okta_auth]
+      - id: ruff
+        args: ["--fix", "--exit-non-zero-on-fix"]
+        exclude: '^integration/benchmarks/'
+
+  - repo: https://github.com/codespell-project/codespell
+    rev: v2.3.0
+    hooks:
+      - id: codespell
+        args: ["reflex_okta_auth"]
+
+  - repo: https://github.com/RobertCraigie/pyright-python
+    rev: v1.1.396
+    hooks:
+      - id: pyright
+        args: [reflex_okta_auth]
+        language: system
