@@ -26,12 +26,12 @@ Reflex will need to access these variables to authenticate users.
 
 ```python
 from reflex_enterprise import App
-from reflex_okta_auth import register_auth_callback
+from reflex_okta_auth import register_auth_endpoints
 
 ...
 
 app = App()
-register_auth_callback(app)
+register_auth_endpoints(app)
 ```
 
 ### Check `OktaAuthState.userinfo` for user identity/validity
