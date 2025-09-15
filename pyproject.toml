@@ -11,6 +11,7 @@ authors = [
 ]
 dependencies = [
     "reflex-enterprise (>=0.3.0)",
+    "cryptography",
     "okta_jwt_verifier",
 ]
 
