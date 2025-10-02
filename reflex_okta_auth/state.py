@@ -39,10 +39,14 @@ class OktaAuthState(rx.State):
     Attributes:
         access_token: The OAuth 2.0 access token stored in local storage.
         id_token: The OpenID Connect ID token stored in local storage.
-        app_state: Random state parameter for CSRF protection.
-        code_verifier: PKCE code verifier for secure authorization.
-        redirect_to_url: URL to redirect to after successful authentication.
         error_message: Error message for authentication failures.
+        is_iframed: Whether the app is running inside an iframe.
+        from_popup: Whether the current page was opened as a popup.
+
+        _redirect_to_url: URL to redirect to after successful authentication.
+        _app_state: Random state parameter for CSRF protection.
+        _code_verifier: PKCE code verifier for secure authorization.
+        _requested_scopes: Scopes requested during authentication.
     """
 
     access_token: str = rx.LocalStorage()
