@@ -23,7 +23,7 @@ def register_auth_endpoints(
     """Register the Okta authentication endpoints with the Reflex app.
 
     This function sets up the necessary OAuth callback endpoint for handling
-    authentication responses from the Microsoft identity platform. The callback
+    authentication responses from the Okta identity platform. The callback
     endpoint handles the authorization code exchange and redirects users.
     """
     if not isinstance(app, App):
