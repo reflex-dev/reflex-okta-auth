@@ -3,7 +3,7 @@
 import reflex as rx
 import reflex_enterprise as rxe
 
-from reflex_okta_auth import OktaAuthState, register_auth_endpoints
+from reflex_okta_auth import OktaAuthState, okta_login_button, register_auth_endpoints
 
 
 def index():
@@ -19,9 +19,7 @@ def index():
                         rx.text(OktaAuthState.userinfo.to_string()),
                         rx.button("Logout", on_click=OktaAuthState.redirect_to_logout),
                     ),
-                    rx.button(
-                        "Log In with Okta", on_click=OktaAuthState.redirect_to_login
-                    ),
+                    okta_login_button(),
                 ),
                 rx.spinner(),
             ),
