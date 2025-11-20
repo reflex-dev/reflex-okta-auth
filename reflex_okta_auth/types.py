@@ -1,9 +1,9 @@
 """TypedDicts for Okta authentication user info."""
 
-from typing import TypedDict
+from typing import Required, TypedDict
 
 
-class OktaUserInfo(TypedDict):
+class OktaUserInfo(TypedDict, total=False):
     """TypedDict representing user information from Okta.
 
     Contains user profile data returned by the Okta /userinfo endpoint
@@ -29,20 +29,20 @@ class OktaUserInfo(TypedDict):
         updated_at: Timestamp of last profile update (Unix epoch).
     """
 
-    sub: str
-    email: str | None
-    name: str | None
-    given_name: str | None
-    middle_name: str | None
-    family_name: str | None
-    nickname: str | None
-    preferred_username: str | None
-    gender: str | None
-    profile: str | None
-    picture: str | None
-    website: str | None
-    birthdate: str | None
-    locale: str | None
-    zoneinfo: str | None
-    email_verified: bool | None
-    updated_at: int | None
+    sub: Required[str]
+    email: str
+    name: str
+    given_name: str
+    middle_name: str
+    family_name: str
+    nickname: str
+    preferred_username: str
+    gender: str
+    profile: str
+    picture: str
+    website: str
+    birthdate: str
+    locale: str
+    zoneinfo: str
+    email_verified: bool
+    updated_at: int
