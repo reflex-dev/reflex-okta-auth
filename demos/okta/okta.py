@@ -15,7 +15,7 @@ def index():
                 rx.cond(
                     OktaAuthState.userinfo,
                     rx.vstack(
-                        rx.text(f"Welcome, {OktaAuthState.userinfo['name']}!"),
+                        rx.text(f"Welcome, {OktaAuthState.userinfo['name']}!"),  # pyright: ignore[reportIndexIssue]
                         rx.text(OktaAuthState.userinfo.to_string()),
                         rx.button("Logout", on_click=OktaAuthState.redirect_to_logout),
                     ),
