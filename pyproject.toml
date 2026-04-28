@@ -82,18 +82,7 @@ lint.pydocstyle.convention = "google"
 "__init__.py" = ["ERA"]
 
 [tool.pyright]
-reportIncompatibleMethodOverride = false
-reportMissingImports = false
-reportInconsistentOverload = false
-exclude = [
-    "**/alembic/*",
-    "demos/*",
-    "reflex_enterprise/components/mantine/*.pyi",
-    ".venv",
-    '**/node_modules',
-    '**/__pycache__',
-    '**/.*',
-]
+
 
 [tool.pytest.ini_options]
 filterwarnings = "ignore:fields may not start with an underscore:RuntimeWarning"

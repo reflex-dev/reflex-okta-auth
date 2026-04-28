@@ -1,6 +1,3 @@
 import reflex as rx
 
-config = rx.Config(
-    app_name="okta",
-    tailwind=None,
-)
+config = rx.Config(app_name="okta")
