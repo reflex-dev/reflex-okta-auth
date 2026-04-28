@@ -1,5 +1,42 @@
 # reflex-okta-auth
 
+> **This repository is archived.** Use the OIDC support built into the
+> `reflex-enterprise` package instead.
+>
+> Notably, this package stores tokens in `LocalStorage`, which is readable by
+> any script running on the page (e.g. via XSS). The `reflex-enterprise` OIDC
+> state stores tokens in HttpOnly, `Secure`, `SameSite=Strict` cookies, and
+> additionally provides refresh tokens with cross-tab sync, nonce / `at_hash`
+> validation, and granted-scope tracking. Functionally, anything this package
+> does is also covered there.
+>
+> ### Migrating
+>
+> Subclass `OIDCAuthState` with `__provider__ = "okta"` — the same
+> `OKTA_CLIENT_ID`, `OKTA_CLIENT_SECRET`, and `OKTA_ISSUER_URI` env vars are
+> picked up automatically (config lookup is `{PROVIDER}_*`):
+>
+> ```python
+> import reflex as rx
+> from reflex_enterprise.auth.oidc.state import OIDCAuthState
+>
+> class OktaAuthState(OIDCAuthState, rx.State):
+>     __provider__ = "okta"
+> ```
+>
+> Render the login button — endpoints are registered automatically on first
+> use, so no explicit `register_auth_endpoints(app)` call is needed:
+>
+> ```python
+> OktaAuthState.get_login_button("Log In with Okta")
+> ```
+>
+> Logout (`redirect_to_logout`) and `userinfo` keep the same names and shape.
+
+---
+
+## Legacy usage (deprecated)
+
 This package requires the `reflex_enterprise` package to be installed.
 
 ## Installation
