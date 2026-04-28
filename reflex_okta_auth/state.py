@@ -11,10 +11,10 @@ from urllib.parse import urlencode, urlparse
 import httpx
 import reflex as rx
 from okta_jwt_verifier.jwt_verifier import BaseJWTVerifier
+from reflex_enterprise.components.message_listener import WindowMessage
 
 from .config import client_id, client_secret, okta_issuer_uri
 from .funcs import POST_MESSAGE_AND_CLOSE_POPUP, WINDOW_OPEN
-from .message_listener import WindowMessage
 from .oidc import okta_issuer_endpoint
 from .types import OktaUserInfo
 
