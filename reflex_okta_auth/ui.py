@@ -1,8 +1,8 @@
 """UI helpers and components for Okta auth pages and buttons."""
 
 import reflex as rx
+from reflex_enterprise.components.message_listener import message_listener
 
-from .message_listener import message_listener
 from .state import OktaAuthState
 
 
